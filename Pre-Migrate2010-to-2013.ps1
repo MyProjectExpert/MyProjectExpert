@@ -1,7 +1,7 @@
 ##################################################################################
 # Title:  Pre-Migrate2010-to-2013
 # Author: Michael Wharton
-# Date:   05/30/2016 
+# Date:   05/30/2018 
 # Description: PowerShell script to automate the migration of Project Server 2010 to Project Server 2013
 #
 # General Steps
