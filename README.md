@@ -1,4 +1,4 @@
-MyProjectExpert Tools for Migration Project Server from 2010 to 2013 to 2016 to 2019.
+MyProjectExpert Tools for Managing Project Server on 2010,2013,2016 and soon 2019.
 
 Additional documentation to follow as I get more familiar with Github and CodePlex
 
