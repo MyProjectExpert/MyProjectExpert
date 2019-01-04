@@ -17,7 +17,7 @@
   Azure Setup with VNET, Storage, AD Server VM, SQL Server VM and SharePoint Server VM
 #>
 $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
-$cred             = Get-Credential -UserName 'mawharton' -Message 'Enter Password'   
+$cred             = Get-Credential -UserName 'username' -Message 'Enter Password'   
 $adminUser        = "username"
 $adminPass        = "password"
 #
