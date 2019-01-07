@@ -17,6 +17,6 @@ Post Activities
    Join Domain
 2) Open Firewall port
 3) SQL Access
-   Add mawharton and farmadmin accounts to SQL
+   Add installation and farmadmin accounts to SQL
    enable SA account
 4 Reboot
