@@ -1,0 +1,12 @@
+Use for SharePoint Saturday Demo.
+
+SharePoint Server 2019 - Single Server Farm
+
+Issues with build
+
+Architect
+
+WCC2016AD - Active Directory
+WCC2019TRIALSP - VM
+WCC2016SQL - VM --- must be running
+
