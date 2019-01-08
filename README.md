@@ -2,7 +2,6 @@ MyProjectExpert Tools for Managing SharePoint/Project Server on 2010,2013,2016 a
 
 Organizing and sanitizing my powershell tools and scripts for Project Server management.
 
-
 Azure-SharePoint-IaaS
   0.0.PrepUsernamePassword.ps1   - optional password files to eliminate passwords in scripts 
   1.0.CreateVNET.ps1 - create VNET using script -- IN PROCESS
