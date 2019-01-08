@@ -5,15 +5,15 @@
 ## Azure-SharePoint-IaaS
   * 0.0 PrepUsernamePassword.ps1 - optional password files to eliminate passwords in scripts 
   * 1.0 CreateVNET.ps1 - create VNET using script -- IN PROCESS
-  * 2.0 CreateAD-VM.ps1 - create Active Directory VM -- IN PROCESS
+  * 2.0 CreateActiveDirectoryOnAzure-VM.ps1 - create Active Directory VM -- IN PROCESS
   * 2.1 ActiveDirectory-Post.txt - steps to create Active Directory - IN PROCESS
-  * 3.0 CreateSqlServerVmOnAzure.ps1 - create SQL Server VM
+  * 3.0.CreateSqlServerOnAzure-VM.ps1 - create SQL Server VM
   * 3.1 SqlServer-Post.txt - Post steps after SQL Server VM is create, ie join domain, etc
-  * 4.0 CreateSharePointServerOnAzureVM.ps1 - create SharePoint VM
+  * 4.0.CreateSharePointOnAzure-VM.ps1 - create SharePoint VM
   * 4.1 SharePoint-Post.txt - post steps after SharePoint Server VM is created, ie join domain, etc
   * 4.2 ConfigurationWizard.ps1 - SharePoint configuration wizard as PowerShell command
   * 4.3 ProjectServer2019.ps1 - Create SharePoint/Project Server site
-  * 5.0 CreateWindows10-VM.ps1 - Create Windows 10 and load developer tools 
+  * 5.0 CreateWindows10OnAzure-VM.ps1 - Create Windows 10 and load developer tools 
   * 5.1 Windows10-Post.txt  - Steps after Windows 10 create.  ie join domain, etc
 
 ## Azure-Tools - Miscellanous tools for Azure
