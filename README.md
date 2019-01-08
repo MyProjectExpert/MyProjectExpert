@@ -40,5 +40,5 @@
 ## SharePoint-2019-Tools
 
 ## Michael Wharton, Project MVP
-## http://myprojectexpert.com 
-## http://whartoncomputer.com
+* http://myprojectexpert.com 
+* http://whartoncomputer.com
