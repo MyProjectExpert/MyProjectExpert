@@ -1,4 +1,4 @@
-MyProjectExpert Tools for Managing SharePoint/Project Server on 2010,2013,2016 and 2019.
+# MyProjectExpert Tools for Managing SharePoint/Project Server on 2010,2013,2016 and 2019.
 
 Organizing and sanitizing my powershell tools and scripts for Project Server management.
 
@@ -15,6 +15,7 @@ Azure-SharePoint-IaaS
   4.3 ProjectServer2019.ps1 - Create SharePoint/Project Server site
   5.0 CreateWindows10-VM.ps1 - Create Windows 10 and load developer tools 
   5.1 Windows10-Post.txt  - Steps after Windows 10 create.  ie join domain, etc
+
 Azure-Tools - Miscellanous tools for Azure
   1. RDPResource.ps1 unchecks the "ALlow connections only from computers running Remote Desktop with Network Level Authentication.
   Update to windows security lock VMs from connecting.  If this fails, copy the four lines and run in Console PS mode from Portal.
