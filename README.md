@@ -15,7 +15,6 @@ Azure-SharePoint-IaaS
   4.3 ProjectServer2019.ps1 - Create SharePoint/Project Server site
   5.0 CreateWindows10-VM.ps1 - Create Windows 10 and load developer tools 
   5.1 Windows10-Post.txt  - Steps after Windows 10 create.  ie join domain, etc
-
 Azure-Tools - Miscellanous tools for Azure
   1. RDPResource.ps1 unchecks the "ALlow connections only from computers running Remote Desktop with Network Level Authentication.
   Update to windows security lock VMs from connecting.  If this fails, copy the four lines and run in Console PS mode from Portal.
@@ -28,7 +27,7 @@ Migration-SharePoint-2013-2016-Tools
 Migration-SharePoint-2016-2016-Tools
   1. File to be added soon.txt (currently sanitize from my tool box)
 PowerShell Tools
-  1. FinkSkuOfferPublisher.ps1  use to find SKU, OFfers, publisher and version for creating Azure Vms
+  1. FindSkuOfferPublisher.ps1  use to find SKU, OFfers, publisher and version for creating Azure Vms
 Project2016Reports
 
 ProjectServer-SharePoint-2013-Tools
