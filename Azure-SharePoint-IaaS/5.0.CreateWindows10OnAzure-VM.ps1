@@ -15,7 +15,7 @@
         Make sure that VMs are running for AD 
   Azure Setup with VNET, Storage, AD Server VM, SQL Server VM and SharePoint Server VM
 #>
-$LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
+# $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
 # $adminUser        = "username"
 # $adminPass        = "password"
 # $secpass  = $adminPass |ConvertTo-SecureString -AsPlainText -Force

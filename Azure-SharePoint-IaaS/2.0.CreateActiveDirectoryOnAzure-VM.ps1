@@ -67,7 +67,7 @@ if ($vmExists)
    Write-Host " Skipping $vmName VM already created "  -BackgroundColor Green -ForegroundColor Blue
 }
 else
-{  # 17 minutes 04 seconds
+{  # 17 minutes 04 secondsy
    Measure-Command {
    Write-Host " Create $vmName VM  "  -BackgroundColor Yellow -ForegroundColor Blue
 ###############################################################################################################
