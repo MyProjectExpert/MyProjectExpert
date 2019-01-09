@@ -2,15 +2,11 @@
     .SYNOPSIS
         Walk thru creating IaaS SQL Server 2019
     .DESCRIPTION
-        Create IaaS SQL Server VM
+        Create SQL Server VM
     .AUTHOR
         Michael Wharton
     .DATE
         01/04/2019
-    .PARAMETER
-        none - however update the constants below
-    .EXAMPLE
-        live demo
     .NOTES
         Make sure that AD VM is running
 #>
@@ -30,10 +26,10 @@ $DataDiskName     = "demosqldata1"
 $PIPname          = "demosqlpip"
 $NICname          = "demosqlnic"
 #
-$DomainName       = "xxx2dev.local"    # using my demo AD
-$vnetName         = "xxx2vnet"         # using my current VNET
-$vnetGroupName    = "xxx2dev"          # from my resouce group
-$SecurityGrp      = "xxx2Security"     # and security
+$DomainName       = "wcc2dev.local"    # using my demo AD
+$vnetName         = "wcc2vnet"         # using my current VNET
+$vnetGroupName    = "wcc2dev"          # from my resouce group
+$SecurityGrp      = "wcc2Security"     # and security
 #
 $containerName    = "vhds"
 $Location         = "East US 2"
@@ -41,19 +37,14 @@ $skuName          = "Standard_LRS"
 $instanceSize     = "Standard_D2"
 # Get-AzureRoleSize | where {$_.Cores -eq 2 -and $_.MemoryInMB -gt 4000 -and $_.MemoryInMB -lt 9000 } | select instance_size, rolesizelabel
 $localIP          = "192.168.0.11"
-$publisherName  = "MicrosoftSQLServer"
-# $offer          = "SQL2016-WS2016"
-# $offer          = "SQL2017-WS2016"
+$publisherName   = "MicrosoftSQLServer"
+# $offer          = "SQL2016-WS2016"   # SQL 2016
+# $offer          = "SQL2017-WS2016"   # SQL 2017
 $offer          = "SQL2019-WS2016"
 $sku            = "SQLDEV"
-#$publisherName    = "MicrosoftSharePoint"
-#$offer            = "MicrosoftSharePointServer"
-#$sku              = "2019"
-#
 #Select-AzureSubscription -SubscriptionName $RmAccount.Context.Subscription.Name | Get-AzureNetworkSecurityGroup -Name $SecurityGrp
 #Get-AzureNetworkSecurityGroup -Name $SecurityGrp -Profile
 #
-###############################################################################################################
 #################### Create NEW Resource Group  ################################################
 $grpExists = Get-AzureRmResourceGroup -Name $GroupName -ErrorAction SilentlyContinue
 if ($grpExists)  
@@ -65,8 +56,7 @@ else
    Write-Host "  Create Resource Group $GroupName  "  -BackgroundColor Yellow  -ForegroundColor Blue
    New-AzureRmResourceGroup -ResourceGroupName $GroupName  -Location $Location -Verbose
 }
-###############################################################################################################
-########### SQL Server Trial VM   ########################################################################
+########### SQL Server VM   ########################################################################
 $vmExists = Get-AzureRmVM -VMName $vmName -ResourceGroupName $GroupName -ErrorAction SilentlyContinue
 if ($vmExists)  
 {
@@ -76,8 +66,7 @@ else
 {  # 13 minutes 25 seconds
    Measure-Command {
    Write-Host " Create SQL Server VM $vmName  "  -BackgroundColor Yellow -ForegroundColor Blue
-###############################################################################################################
-# Setup Storage for SharePoint 2019 VM ####################################################################################
+# Setup Storage for SharePoint 2019 VM #############################################################
 $StorageAccount = New-AzureRmStorageAccount  `
     -ResourceGroupName $GroupName  -Location $Location `
     -Name $storageName -Sku Standard_LRS  -Verbose
@@ -94,11 +83,10 @@ $storeContext = New-AzureStorageContext -StorageAccountName $storageName -Storag
 $container = New-azurestoragecontainer -name $containerName -Permission Container -Context $storeContext -Verbose
 # Look at what was created
 # Get-AzureStorageContainer -Context $storecontext
-
 $StorageAccount   =  Get-AzureRmStorageAccount -ResourceGroupName $GroupName -Name $storageName
 $OSDiskUri        = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
 $DataDiskUri      = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName  + ".vhd"
-###############################################################################################################
+
 ############# Create PIP Address or Public IP address for SharePoint Server VM #######################################
 # Note: Get-module -ListAvailable  --- If prompt for Login-AzureRmAccount, it may be because multiple version of azure
 $publicIP = New-AzureRmPublicIpAddress `
@@ -106,16 +94,16 @@ $publicIP = New-AzureRmPublicIpAddress `
   -Location $Location `
   -AllocationMethod Static `
   -Name $PIPname -Verbose
-###############################################################################################################
+
 ############## Create network interface card for SharePoint Server VM    #############################################
-$vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $vnetGroupName -Name $vnetName   # using my VNET
+$vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $vnetGroupName -Name $vnetName -Verbose
 $IPConfig = New-AzureRmNetworkInterfaceIpConfig -Name $NICname `
      -PrivateIpAddressVersion IPv4 -PrivateIpAddress $localIP `
-     -SubnetId $vnet.Subnets[0].Id -PublicIpAddressId $publicIP.Id 
-$NSG = Get-AzureRmNetworkSecurityGroup -Name $SecurityGrp -ResourceGroupName $vnetGroupName
+     -SubnetId $vnet.Subnets[0].Id -PublicIpAddressId $publicIP.Id -Verbose
+$NSG = Get-AzureRmNetworkSecurityGroup -Name $SecurityGrp -ResourceGroupName $vnetGroupName -Verbose
 $nic = New-AzureRmNetworkInterface -Name $NICname -ResourceGroupName $groupname `
-     -Location $location -IpConfiguration $ipconfig -NetworkSecurityGroupId $nsg.Id 
-###############################################################################################################
+     -Location $location -IpConfiguration $ipconfig -NetworkSecurityGroupId $nsg.Id -Verbose
+
 ########### Create SharePoint 2019 Server virtual machine  ###########################################################
 $vm = New-AzureRmVMConfig -VMName $vmName -VMSize $instanceSize |
     Set-AzureRmVMOperatingSystem -Windows -ComputerName $vmName -Credential $cred -ProvisionVMAgent -EnableAutoUpdate  |
@@ -126,15 +114,12 @@ $vm = New-AzureRmVMConfig -VMName $vmName -VMSize $instanceSize |
 New-AzureRmVM -ResourceGroupName $GroupName -Location $Location -VM $vm -Verbose
     }
 }
-#
-###############################################################################################################
-######  RDP into new SharePoint 2019 server VM    ################################################################################
+######  RDP into new SharePoint 2019 server VM    #####################################################################
 # Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName  | Select IpAddress, name
 $RDPIP = Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName | WHERE {$_.Name -eq $PIPname} | Select IpAddress
 mstsc /v:($RDPIP.IpAddress)
-#  host   TrialSP2019
+#  host   demosql
 #  login  azurecloud/youraccount
 #  Join   DEMO.LOCAL domain
 #  reboot
 #  OPEN PORT 443
-#  Start SharPoint 2019 Server Wizard
