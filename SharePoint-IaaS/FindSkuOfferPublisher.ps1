@@ -1,4 +1,4 @@
-<#
+﻿<#
     .SYNOPSIS
         Tool for finding SKU, OFFER and 
     .DESCRIPTION
@@ -23,8 +23,8 @@ Get-AzureRmVMImagePublisher -Location $locName `
 # 
 $pubName = "MicrosoftSharepoint" 
 $pubName = "MicrosoftSQLServer" 
-$pubName = "MicrosoftWindowsDesktop"
 $pubName = "MicrosoftWindowsServer"
+$pubName = "MicrosoftWindowsDesktop"
 # List Offers
 Get-AzureRmVMImageOffer -Location $locName -publisher $pubName `
  | Where-Object Offer -like 'SQL*' `
@@ -35,11 +35,17 @@ $offerName ="SQL2016-WS2016"
 $offerName ="SQL2017-WS2016"
 $offerName ="SQL2019-WS2016"
 $offerName ="WindowsServer"
+$offerName ="Windows-10"
 # List SKU
 Get-AzureRMVMImageSku -Location $locName -Publisher $pubName -Offer $offerName | Select Skus
+Get-AzureRMVMImageSku -Location $locName -Publisher $pubName -Offer $offerName | Format-Table
+
 $skuName="SQLDEV"
 $skuName="2019-Datacenter"
 $skuName="2019-Datacenter-smalldisk"
+$skuName="rs5-evd"
+$skuName="rs5-pro"
+
 # List Versions
 Get-AzureRMVMImage -Location $locName -Publisher $pubName -Offer $offerName -Sku $skuName `
  | Select Version
@@ -48,3 +54,5 @@ write-host "location:  " $locName -ForegroundColor Yellow
 write-host "publisher: " $pubName -ForegroundColor Yellow
 write-host "offer:     " $offerName -ForegroundColor Yellow
 write-host "skus:      " $skuName -ForegroundColor Yellow
+
+

@@ -1,16 +1,19 @@
-<#
+﻿<#
     .SYNOPSIS
-        Create Windows Activer Directory Server
-        Walk thru creating IaaS Active Directory
-        NOT READY - WORK IN PROCESS
+        Walk thru creating IaaS with Windows 10 desktop
     .DESCRIPTION
-        Create Windows Activer Directory Server
+        Create IaaS Windows 10 desktop
     .AUTHOR
-        Michael Wharton, Project MVP
+        Michael Wharton
     .DATE
-        01/08/2019
+        01/01/2019
+    .PARAMETER
+        Update values in constants below
+    .EXAMPLE
+        live demo
     .NOTES
-        Make sure that AD VM is running
+        Make sure that VMs are running for AD 
+  Azure Setup with VNET, Storage, AD Server VM, SQL Server VM and SharePoint Server VM
 #>
 $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
 # $adminUser        = "username"
@@ -18,57 +21,56 @@ $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
 # $secpass  = $adminPass |ConvertTo-SecureString -AsPlainText -Force
 # $cred  = New-Object System.Management.Automation.PSCredential -ArgumentList $adminUser, $secPass
 #
-$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt' 
+$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt’ 
 #
-$groupName        = "demoad"
-$vmName           = "demoad"          #  
-$storageName      = "demoadstorage"   # NOTE: must be lowercase 
-$OSDiskName       = "demoadOS" 
-$DataDiskName     = "demoaddata1" 
-$PIPname          = "demoadpip"
-$NICname          = "demoadnic"
+$groupName        = "demowin10"
+$vmName           = "demowin10"          
+$storageName      = "demowin10storage2"   # NOTE: must be lowercase 
+$OSDiskName       = "demowin10OS" 
+$DataDiskName     = "demowin10data1" 
+$PIPname          = "demowin10pip"
+$NICname          = "demowin10nic"
 #
-$DomainName       = "dev.local"    # using my demo AD
-$vnetName         = "vnet"         # using my current VNET
-$vnetGroupName    = "dev"          # from my resouce group
-$SecurityGrp      = "Security"     # and security
+$DomainName       = "wcc2dev.local"      # using my demo AD
+$vnetName         = "wcc2vnet"           # using my current VNET
+$vnetGroupName    = "wcc2dev"            # from my resouce group
+$SecurityGrp      = "wcc2Security"       # and security
 #
 $containerName    = "vhds"
 $Location         = "East US 2"
 $skuName          = "Standard_LRS"
 $instanceSize     = "Standard_D2"
-# Get-AzureRoleSize | where {$_.Cores -eq 2 -and $_.MemoryInMB -gt 4000 -and $_.MemoryInMB -lt 9000 } | select instance_size, rolesizelabel
-$localIP          = "192.168.0.3"
-$publisherName  = "MicrosoftWindowsServer"
-$offer          = "WindowsServer"
-$sku            = "2019-Datacenter-smalldisk"
+$localIP          = "192.168.0.14"
 #
-#Select-AzureSubscription -SubscriptionName $RmAccount.Context.Subscription.Name | Get-AzureNetworkSecurityGroup -Name $SecurityGrp
-#Get-AzureNetworkSecurityGroup -Name $SecurityGrp -Profile
+$publisherName    = "MicrosoftWindowsDesktop"
+$offer            = "Windows-10"
+$sku              = "rs5-pro"
 #
 #################### Create NEW Resource Group  ################################################
 $grpExists = Get-AzureRmResourceGroup -Name $GroupName -ErrorAction SilentlyContinue
 if ($grpExists)  
 {
-   Write-Host "  OK - Skip Creating Resource Group $GroupName  "  -BackgroundColor Green -ForegroundColor Blue
+Write-Host "  OK - Skip Creating Resource Group $GroupName  "  -BackgroundColor Green -ForegroundColor Blue
 }
 else
 {
-   Write-Host "  Create Resource Group $GroupName  "  -BackgroundColor Yellow  -ForegroundColor Blue
-   New-AzureRmResourceGroup -ResourceGroupName $GroupName  -Location $Location -Verbose
+Write-Host "  Create Resource Group $GroupName  "  -BackgroundColor Yellow  -ForegroundColor Blue
+New-AzureRmResourceGroup -ResourceGroupName $GroupName  -Location $Location -Verbose
 }
-########### Windows Server AD VM   ########################################################################
+########### Windows 10 VM   ########################################################################
 $vmExists = Get-AzureRmVM -VMName $vmName -ResourceGroupName $GroupName -ErrorAction SilentlyContinue
 if ($vmExists)  
 {
-   Write-Host " Skipping - Windows Server Active Directory VM $vmName already created "  -BackgroundColor Green -ForegroundColor Blue
+Write-Host "  Skipping - Windows 10 VM Exits $vmName  "  -BackgroundColor Green -ForegroundColor Blue
 }
 else
-{  # 13 minutes 25 seconds
-   Measure-Command {
-   Write-Host " Create Windows Server Active Directory $vmName  "  -BackgroundColor Yellow -ForegroundColor Blue
+{  
+# 22 minutes 34 seconds
+# 23 minutes 33 seconds
+Measure-Command {
+Write-Host "  Creating Windows 10 VM VM $vmName  "  -BackgroundColor Yellow -ForegroundColor Blue
 ###############################################################################################################
-# Setup Storage for Windows Server AD VM ####################################################################################
+# Setup Storage for SharePoint 2019 VM ####################################################################################
 $StorageAccount = New-AzureRmStorageAccount  `
     -ResourceGroupName $GroupName  -Location $Location `
     -Name $storageName -Sku Standard_LRS  -Verbose
@@ -84,11 +86,12 @@ $storeContext = New-AzureStorageContext -StorageAccountName $storageName -Storag
 # Create a storage container 
 $container = New-azurestoragecontainer -name $containerName -Permission Container -Context $storeContext -Verbose
 # Get-AzureStorageContainer -Context $storecontext
+
 $StorageAccount   =  Get-AzureRmStorageAccount -ResourceGroupName $GroupName -Name $storageName
 $OSDiskUri        = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
 $DataDiskUri      = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName  + ".vhd"
 ###############################################################################################################
-############# Create PIP Address or Public IP address for Server VM #######################################
+############# Create PIP Address or Public IP address for Windows 10 VM #######################################
 # Note: Get-module -ListAvailable  --- If prompt for Login-AzureRmAccount, it may be because multiple version of azure
 $publicIP = New-AzureRmPublicIpAddress `
   -ResourceGroupName $GroupName  `
@@ -96,7 +99,7 @@ $publicIP = New-AzureRmPublicIpAddress `
   -AllocationMethod Static `
   -Name $PIPname -Verbose
 ###############################################################################################################
-############## Create network interface card for Server VM    #############################################
+############## Create network interface card for Windows 10 VM    #############################################
 $vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $vnetGroupName -Name $vnetName   # using my VNET
 $IPConfig = New-AzureRmNetworkInterfaceIpConfig -Name $NICname `
      -PrivateIpAddressVersion IPv4 -PrivateIpAddress $localIP `
@@ -105,7 +108,7 @@ $NSG = Get-AzureRmNetworkSecurityGroup -Name $SecurityGrp -ResourceGroupName $vn
 $nic = New-AzureRmNetworkInterface -Name $NICname -ResourceGroupName $groupname `
      -Location $location -IpConfiguration $ipconfig -NetworkSecurityGroupId $nsg.Id 
 ###############################################################################################################
-########### Create Server virtual machine  ###########################################################
+########### Create Windows 10 virtual machine  ###########################################################
 $vm = New-AzureRmVMConfig -VMName $vmName -VMSize $instanceSize |
     Set-AzureRmVMOperatingSystem -Windows -ComputerName $vmName -Credential $cred -ProvisionVMAgent -EnableAutoUpdate  |
     Set-AzureRmVMSourceImage -PublisherName $PublisherName -Offer $offer -Skus $SKU -Version "latest"  |
@@ -113,18 +116,15 @@ $vm = New-AzureRmVMConfig -VMName $vmName -VMSize $instanceSize |
     Add-AzureRmVMNetworkInterface -Id $nic.Id -Verbose 
 #   Set-AzureRmVMDataDisk -VM $vm -Lun 0  -DiskSizeInGB 50 -Caching ReadWrite -Verbose
 New-AzureRmVM -ResourceGroupName $GroupName -Location $Location -VM $vm -Verbose
-    }
+   }
 }
 #
 ###############################################################################################################
-######  RDP into new server VM    ################################################################################
+######  RDP into new SharePoint 2019 server VM    ################################################################################
 # Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName  | Select IpAddress, name
-$RDPIP = Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName | WHERE {$_.Name -eq $PIPname} | Select IpAddress
+$RDPIP = Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName | WHERE {$_.Name -eq $trialsp2019pipName} | Select IpAddress
 mstsc /v:($RDPIP.IpAddress)
-#  host   TrialSP2019
-#  login  azurecloud/youraccount
+#  host   demowcc10
+#  login  azurecloud/youracct
 #  Join   DEMO.LOCAL domain
 #  reboot
-#  OPEN PORT 443
-#  Start SharPoint 2019 Server Wizard
-=======

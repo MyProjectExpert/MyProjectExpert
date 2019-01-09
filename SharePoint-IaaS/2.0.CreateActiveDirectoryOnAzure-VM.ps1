@@ -1,14 +1,17 @@
-<#
+﻿<#
     .SYNOPSIS
-        Create Windows Activer Directory Server
         Walk thru creating IaaS Active Directory
-        NOT READY - WORK IN PROCESS
+        NOT READT - WORK IN PROCESS
     .DESCRIPTION
-        Create Windows Activer Directory Server
+        Create IaaS AD Server VM
     .AUTHOR
-        Michael Wharton, Project MVP
+        Michael Wharton
     .DATE
-        01/08/2019
+        01/04/2019
+    .PARAMETER
+        none - however update the constants below
+    .EXAMPLE
+        live demo
     .NOTES
         Make sure that AD VM is running
 #>
@@ -18,7 +21,7 @@ $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
 # $secpass  = $adminPass |ConvertTo-SecureString -AsPlainText -Force
 # $cred  = New-Object System.Management.Automation.PSCredential -ArgumentList $adminUser, $secPass
 #
-$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt' 
+$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt’ 
 #
 $groupName        = "demoad"
 $vmName           = "demoad"          #  
@@ -28,10 +31,10 @@ $DataDiskName     = "demoaddata1"
 $PIPname          = "demoadpip"
 $NICname          = "demoadnic"
 #
-$DomainName       = "dev.local"    # using my demo AD
-$vnetName         = "vnet"         # using my current VNET
-$vnetGroupName    = "dev"          # from my resouce group
-$SecurityGrp      = "Security"     # and security
+$DomainName       = "wcc2dev.local"    # using my demo AD
+$vnetName         = "wcc2vnet"         # using my current VNET
+$vnetGroupName    = "wcc2dev"          # from my resouce group
+$SecurityGrp      = "wcc2Security"     # and security
 #
 $containerName    = "vhds"
 $Location         = "East US 2"
@@ -46,6 +49,7 @@ $sku            = "2019-Datacenter-smalldisk"
 #Select-AzureSubscription -SubscriptionName $RmAccount.Context.Subscription.Name | Get-AzureNetworkSecurityGroup -Name $SecurityGrp
 #Get-AzureNetworkSecurityGroup -Name $SecurityGrp -Profile
 #
+###############################################################################################################
 #################### Create NEW Resource Group  ################################################
 $grpExists = Get-AzureRmResourceGroup -Name $GroupName -ErrorAction SilentlyContinue
 if ($grpExists)  
@@ -57,16 +61,17 @@ else
    Write-Host "  Create Resource Group $GroupName  "  -BackgroundColor Yellow  -ForegroundColor Blue
    New-AzureRmResourceGroup -ResourceGroupName $GroupName  -Location $Location -Verbose
 }
+###############################################################################################################
 ########### Windows Server AD VM   ########################################################################
 $vmExists = Get-AzureRmVM -VMName $vmName -ResourceGroupName $GroupName -ErrorAction SilentlyContinue
 if ($vmExists)  
 {
-   Write-Host " Skipping - Windows Server Active Directory VM $vmName already created "  -BackgroundColor Green -ForegroundColor Blue
+   Write-Host " Skipping $vmName VM already created "  -BackgroundColor Green -ForegroundColor Blue
 }
 else
 {  # 13 minutes 25 seconds
    Measure-Command {
-   Write-Host " Create Windows Server Active Directory $vmName  "  -BackgroundColor Yellow -ForegroundColor Blue
+   Write-Host " Create $vmName VM  "  -BackgroundColor Yellow -ForegroundColor Blue
 ###############################################################################################################
 # Setup Storage for Windows Server AD VM ####################################################################################
 $StorageAccount = New-AzureRmStorageAccount  `
@@ -127,4 +132,3 @@ mstsc /v:($RDPIP.IpAddress)
 #  reboot
 #  OPEN PORT 443
 #  Start SharPoint 2019 Server Wizard
-=======
