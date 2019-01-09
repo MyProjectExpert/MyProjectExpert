@@ -126,5 +126,4 @@ mstsc /v:($RDPIP.IpAddress)
 #  login  azurecloud/youraccount
 #  Join   DEMO.LOCAL domain
 #  reboot
-#  OPEN PORT 443
 #  Start SharPoint 2019 Server Wizard

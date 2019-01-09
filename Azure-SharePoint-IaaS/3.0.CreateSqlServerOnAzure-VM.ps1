@@ -121,5 +121,5 @@ mstsc /v:($RDPIP.IpAddress)
 #  host   demosql
 #  login  azurecloud/youraccount
 #  Join   DEMO.LOCAL domain
-#  reboot
 #  OPEN PORT 443
+#  reboot
