@@ -1,6 +1,6 @@
 ﻿<#
     .SYNOPSIS
-        Walk thru creating IaaS with Windows 10 desktop
+        Walk thru creating Windows 10 VM desktop on Azure
     .DESCRIPTION
         Create IaaS Windows 10 desktop
     .AUTHOR
