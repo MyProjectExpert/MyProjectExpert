@@ -1,7 +1,7 @@
 ﻿<#
     .SYNOPSIS
         Walk thru creating IaaS Active Directory
-        NOT READT - WORK IN PROCESS
+        NOCreate IaaS AD Server VM
     .DESCRIPTION
         Create IaaS AD Server VM
     .AUTHOR
@@ -15,7 +15,7 @@
     .NOTES
         Make sure that AD VM is running
 #>
-$LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
+# $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
 # $adminUser        = "username"
 # $adminPass        = "password"
 # $secpass  = $adminPass |ConvertTo-SecureString -AsPlainText -Force
@@ -41,15 +41,14 @@ $Location         = "East US 2"
 $skuName          = "Standard_LRS"
 $instanceSize     = "Standard_D2"
 # Get-AzureRoleSize | where {$_.Cores -eq 2 -and $_.MemoryInMB -gt 4000 -and $_.MemoryInMB -lt 9000 } | select instance_size, rolesizelabel
-$localIP          = "192.168.0.3"
-$publisherName  = "MicrosoftWindowsServer"
-$offer          = "WindowsServer"
-$sku            = "2019-Datacenter-smalldisk"
+$localIP          = "192.168.0.15"
+$publisherName    = "MicrosoftWindowsServer"
+$offer            = "WindowsServer"
+$sku              = "2019-Datacenter-smalldisk"
 #
 #Select-AzureSubscription -SubscriptionName $RmAccount.Context.Subscription.Name | Get-AzureNetworkSecurityGroup -Name $SecurityGrp
 #Get-AzureNetworkSecurityGroup -Name $SecurityGrp -Profile
 #
-###############################################################################################################
 #################### Create NEW Resource Group  ################################################
 $grpExists = Get-AzureRmResourceGroup -Name $GroupName -ErrorAction SilentlyContinue
 if ($grpExists)  
@@ -61,7 +60,6 @@ else
    Write-Host "  Create Resource Group $GroupName  "  -BackgroundColor Yellow  -ForegroundColor Blue
    New-AzureRmResourceGroup -ResourceGroupName $GroupName  -Location $Location -Verbose
 }
-###############################################################################################################
 ########### Windows Server AD VM   ########################################################################
 $vmExists = Get-AzureRmVM -VMName $vmName -ResourceGroupName $GroupName -ErrorAction SilentlyContinue
 if ($vmExists)  
@@ -69,7 +67,7 @@ if ($vmExists)
    Write-Host " Skipping $vmName VM already created "  -BackgroundColor Green -ForegroundColor Blue
 }
 else
-{  # 13 minutes 25 seconds
+{  # 17 minutes 04 seconds
    Measure-Command {
    Write-Host " Create $vmName VM  "  -BackgroundColor Yellow -ForegroundColor Blue
 ###############################################################################################################
@@ -126,9 +124,7 @@ New-AzureRmVM -ResourceGroupName $GroupName -Location $Location -VM $vm -Verbose
 # Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName  | Select IpAddress, name
 $RDPIP = Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName | WHERE {$_.Name -eq $PIPname} | Select IpAddress
 mstsc /v:($RDPIP.IpAddress)
-#  host   TrialSP2019
+#  host   demoad
 #  login  azurecloud/youraccount
 #  Join   DEMO.LOCAL domain
 #  reboot
-#  OPEN PORT 443
-#  Start SharPoint 2019 Server Wizard
