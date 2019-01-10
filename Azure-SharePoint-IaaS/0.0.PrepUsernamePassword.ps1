@@ -6,12 +6,10 @@
         Michael Wharton
     .DATE
         01/04/2019
-    .PARAMETER
-        none - however update the constants below
-        update username and password in script and run.
     .NOTES
         Script to setup username and passwords in SAFE forward.
         Once done, PowerShell Scripts will not be required to show password.
+        Dont update and store back to Github
 #>
 
 function Create-CredFile{
