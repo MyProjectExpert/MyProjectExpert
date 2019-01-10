@@ -1,19 +1,10 @@
-﻿<#
-    .SYNOPSIS
-        Update Azure VM to override Remote Login fail
+<#
     .DESCRIPTION
         Update Azure VM to override Remote Login fail
     .AUTHOR
         Michael Wharton
     .DATE
         01/01/2019
-    .PARAMETER
-        Update values in constants below
-    .EXAMPLE
-        live demo
-    .NOTES
-        Make sure that VMs are running for AD 
-  Azure Setup with VNET, Storage, AD Server VM, SQL Server VM and SharePoint Server VM
 #>
 ###############################################################################################################
 $LoginRmAccount   = Login-AzureRmAccount 
