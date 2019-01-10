@@ -111,7 +111,6 @@ New-AzureRmVM -ResourceGroupName $GroupName -Location $Location -VM $vm -Verbose
     }
 }
 #
-###############################################################################################################
 ######  RDP into new server VM    ################################################################################
 # Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName  | Select IpAddress, name
 $RDPIP = Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName | WHERE {$_.Name -eq $PIPname} | Select IpAddress
@@ -120,3 +119,4 @@ mstsc /v:($RDPIP.IpAddress)
 #  login  azurecloud/youraccount
 #  Join   DEMO.LOCAL domain
 #  reboot
+#  install AD and DNS 
