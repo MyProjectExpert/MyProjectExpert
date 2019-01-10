@@ -7,7 +7,6 @@
         Michael Wharton
     .DATE
         1/7/2019
-
 #>
 $LoginRmAccount   = Login-AzureRmAccount 
 # $adminUser        = "username"
@@ -41,10 +40,6 @@ $subnetrange1     = "10.0.0.0/24"
 $subnetname2      = "DomainServicesSubnet"
 $subnetrange2     = "10.0.1.0/24"
 #
-#$DefaultSubnet=''
-#$DomainServicesSubnet =''
-#
-###############################################################################################################
 #################### Create NEW Resource Group  ################################################
 $grpExists = Get-AzureRmResourceGroup -Name $GroupName -ErrorAction SilentlyContinue
 if ($grpExists)  
@@ -56,7 +51,7 @@ else
 Write-Host "  Create Resource Group $GroupName  "  -BackgroundColor Yellow  -ForegroundColor Blue
 New-AzureRmResourceGroup -ResourceGroupName $GroupName  -Location $Location -Verbose
 }
-
+#################### Create VNET  ################################################
 #
 $DefaultSubnet = New-AzureRmVirtualNetworkSubnetConfig -Name $subnetname1 -AddressPrefix $subnetrange1 -Verbose
 $DomainServicesSubnet = New-AzureRmVirtualNetworkSubnetConfig -Name $subnetname1 -AddressPrefix $subnetrange1 -Verbose
