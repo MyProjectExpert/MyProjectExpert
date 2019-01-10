@@ -17,5 +17,4 @@ Post Activities
 2) Install Active Directory
 3) Update DNS
 4) Reboot
-
 #>
