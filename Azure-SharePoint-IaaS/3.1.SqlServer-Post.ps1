@@ -15,10 +15,9 @@ Post Activities
    uncheck RDP flag, 
    remove VP6
    Join Domain
-2) Open Firewall port
+2) Open Firewall port 1433 and any other required SQL Ports
 3) SQL Access
    Add mawharton and farmadmin accounts to SQL
    enable SA account
 4) Reboot
 #>
-
