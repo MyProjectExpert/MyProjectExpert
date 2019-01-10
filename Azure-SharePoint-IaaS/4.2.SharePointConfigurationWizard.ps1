@@ -1,8 +1,12 @@
-﻿# SharePoint2019FarmConfigurationWizard.ps1
-#############################################################################
-# Description: SharePoint 2019 SharePoint Farm Configuration Wizards
-# Author: Michael Wharton, Project MVP
-# Date:   11/27/2018 
+<# 
+ FileName: 4.2.SharePointConfigurationWizard.ps1
+ Description: SharePoint 2019 SharePoint Farm Configuration Wizards
+ Author: Michael Wharton, Project MVP
+ Date:   11/27/2018 
+ 
+ Using a script to build to SharePoint farm allows for naming SQL databases
+ and avoid QUID in database name.   Also enterprise organization frawn on wizards
+ and a sript provides details of what is happening.
 #
 #############################################################################
 #    Setup user account
@@ -10,10 +14,9 @@
 #    2. must be a member of local admin group on wech web and application server
 #    3. SQL Server must have roles of securityadmin and dbcreator
 #############################################################################
-#
 #  22 minutes - 2 proc
 #  11 minutes - 4 proc
-#
+#>
 Measure-Command {
 Set-ExecutionPolicy "Unrestricted" -ErrorAction SilentlyContinue -Confirm:$false -Verbose
 Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
@@ -28,9 +31,6 @@ $CentralAdminSite         = "http://demosp:8080"
 $AcctFarmAdmin            = "XXX2dev\FarmAdmin"
 $credFarmAdmin            = Import-CliXml -Path 'C:\safe\XXX2dev-farmadmin.txt’ 
 #
-#############################################################################
-#$CredServiceSP = Get-Credential
-#New-SPManagedAccount -Credential $CredServiceSP
 ##########################################################
 #  1. configdb
 #  Create SharePoint Configuration Database
@@ -49,28 +49,14 @@ write-host "Start Creating Configuration Database" -ForegroundColor Yellow
 #New-SPConfigurationDatabase -DatabaseServer $DatabaseServer -DatabaseName $DatabaseName -AdministrationContentDatabasename $AdministrationContentDatabasename  -FarmCredentials $CredFarmAdmin -Passphrase (ConvertTo-SecureString -String $Passphrase -AsPlainText -Force) -SkipRegisterAsDistributedCacheHost -Verbose
  New-SPConfigurationDatabase -DatabaseName $DatabaseName -DatabaseServer $DatabaseServer -AdministrationContentDatabaseName $AdminContentDatabasename -FarmCredentials $credFarmAdmin -Passphrase (ConvertTo-SecureString -String $Passphrase -AsPlainText -Force)  -LocalServerRole SingleServerFarm -Verbose
 #New-SPConfigurationDatabase -DatabaseName $DatabaseName -DatabaseServer $DatabaseServer -AdministrationContentDatabaseName $AdminContentDatabasename -FarmCredentials $credFarmAdmin -Passphrase (ConvertTo-SecureString -String $Passphrase -AsPlainText -Force)  -LocalServerRole SingleServerFarm -Verbose
-
 #
 # Use the following command for SharePoint farm with more than 1 server
 # New-SPConfigurationDatabase -DatabaseServer $DatabaseServer -DatabaseName $DatabaseName -AdministrationContentDatabasename $AdministrationContentDatabasename  -FarmCredentials $CredFarmAdmin -Passphrase (ConvertTo-SecureString -String $Passphrase -AsPlainText -Force)  -LocalServerRole SingleServerFarm -Verbose
 #
 # Use command to connect to an existing SHarePoint Fram
 #Connect-SPConfigurationDatabase -DatabaseName $DatabaseName -DatabaseServer $DatabaseServer -SkipRegisterAsDistributedCacheHost
-################################################################
-#  The following seqment of code adds the project server extensions that 
-#  don't get added when the New-SPconfigurationDatabase is created
-################################################################
-#$svc = [Microsoft.SharePoint.Administration.SPWebService]::ContentService 
-#[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.Office.Project.Server.Database.Extension") 
-#$svc.RegisteredDatabaseExtensionTypes.EnsureAdded([Microsoft.Office.Project.Server.Database.Extension.ProjectDatabaseExtension])
-#$svc.Update($true)
-##########################################################
-#  The following are miscellanous items that are needed. Not sure what they do
-#  Note: change order based on Todd Klindt version
 ##########################################################
 #  2. helpcollections
-#  Install SP Help Collection
-##########################################################
 write-host "Start SPHelpCollection" -ForegroundColor Yellow
 Install-SPHelpCollection -All -Verbose
 ##########################################################
@@ -130,6 +116,4 @@ write-host "Start Central Admin" -ForegroundColor Yellow
 START $CentralAdminSite 
 #  Make Central Admin Site a local trusted site and the username prompt will not pop-up
 #Start-Process "C:\Program Files\Internet Explorer\iexplore.exe" -ArgumentList $CentralAdminSite -Credential ($CredFarmAdmin)
-##########################################################
-
 }
