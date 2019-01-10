@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         Walk thru creating IaaS with Windows 10 desktop
     .DESCRIPTION
@@ -7,13 +7,10 @@
         Michael Wharton
     .DATE
         01/01/2019
-    .PARAMETER
-        Update values in constants below
-    .EXAMPLE
-        live demo
     .NOTES
         Make sure that VMs are running for AD 
-  Azure Setup with VNET, Storage, AD Server VM, SQL Server VM and SharePoint Server VM
+    .FileName 
+        5.0.CreateWindows10OnAzure.ps1
 #>
 $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
 # $adminUser        = "username"
@@ -31,10 +28,10 @@ $DataDiskName     = "demowin10data1"
 $PIPname          = "demowin10pip"
 $NICname          = "demowin10nic"
 #
-$DomainName       = "wcc2dev.local"      # using my demo AD
-$vnetName         = "wcc2vnet"           # using my current VNET
-$vnetGroupName    = "wcc2dev"            # from my resouce group
-$SecurityGrp      = "wcc2Security"       # and security
+$DomainName       = "demo2dev.local"      # using my demo AD
+$vnetName         = "demo2vnet"           # using my current VNET
+$vnetGroupName    = "demo2dev"            # from my resouce group
+$SecurityGrp      = "demo2Security"       # and security
 #
 $containerName    = "vhds"
 $Location         = "East US 2"
@@ -57,6 +54,7 @@ else
 Write-Host "  Create Resource Group $GroupName  "  -BackgroundColor Yellow  -ForegroundColor Blue
 New-AzureRmResourceGroup -ResourceGroupName $GroupName  -Location $Location -Verbose
 }
+
 ########### Windows 10 VM   ########################################################################
 $vmExists = Get-AzureRmVM -VMName $vmName -ResourceGroupName $GroupName -ErrorAction SilentlyContinue
 if ($vmExists)  
@@ -69,7 +67,7 @@ else
 # 23 minutes 33 seconds
 Measure-Command {
 Write-Host "  Creating Windows 10 VM VM $vmName  "  -BackgroundColor Yellow -ForegroundColor Blue
-###############################################################################################################
+
 # Setup Storage for SharePoint 2019 VM ####################################################################################
 $StorageAccount = New-AzureRmStorageAccount  `
     -ResourceGroupName $GroupName  -Location $Location `
@@ -90,7 +88,7 @@ $container = New-azurestoragecontainer -name $containerName -Permission Containe
 $StorageAccount   =  Get-AzureRmStorageAccount -ResourceGroupName $GroupName -Name $storageName
 $OSDiskUri        = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
 $DataDiskUri      = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName  + ".vhd"
-###############################################################################################################
+
 ############# Create PIP Address or Public IP address for Windows 10 VM #######################################
 # Note: Get-module -ListAvailable  --- If prompt for Login-AzureRmAccount, it may be because multiple version of azure
 $publicIP = New-AzureRmPublicIpAddress `
@@ -98,7 +96,7 @@ $publicIP = New-AzureRmPublicIpAddress `
   -Location $Location `
   -AllocationMethod Static `
   -Name $PIPname -Verbose
-###############################################################################################################
+
 ############## Create network interface card for Windows 10 VM    #############################################
 $vnet = Get-AzureRmVirtualNetwork -ResourceGroupName $vnetGroupName -Name $vnetName   # using my VNET
 $IPConfig = New-AzureRmNetworkInterfaceIpConfig -Name $NICname `
@@ -107,7 +105,7 @@ $IPConfig = New-AzureRmNetworkInterfaceIpConfig -Name $NICname `
 $NSG = Get-AzureRmNetworkSecurityGroup -Name $SecurityGrp -ResourceGroupName $vnetGroupName
 $nic = New-AzureRmNetworkInterface -Name $NICname -ResourceGroupName $groupname `
      -Location $location -IpConfiguration $ipconfig -NetworkSecurityGroupId $nsg.Id 
-###############################################################################################################
+
 ########### Create Windows 10 virtual machine  ###########################################################
 $vm = New-AzureRmVMConfig -VMName $vmName -VMSize $instanceSize |
     Set-AzureRmVMOperatingSystem -Windows -ComputerName $vmName -Credential $cred -ProvisionVMAgent -EnableAutoUpdate  |
@@ -118,11 +116,10 @@ $vm = New-AzureRmVMConfig -VMName $vmName -VMSize $instanceSize |
 New-AzureRmVM -ResourceGroupName $GroupName -Location $Location -VM $vm -Verbose
    }
 }
-#
-###############################################################################################################
-######  RDP into new SharePoint 2019 server VM    ################################################################################
+
+######  RDP Windows 10 VM Client    ################################################################################
 # Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName  | Select IpAddress, name
-$RDPIP = Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName | WHERE {$_.Name -eq $trialsp2019pipName} | Select IpAddress
+$RDPIP = Get-AzureRmPublicIpAddress -ResourceGroupName $GroupName | WHERE {$_.Name -eq $PIPname } | Select IpAddress
 mstsc /v:($RDPIP.IpAddress)
 #  host   demowcc10
 #  login  azurecloud/youracct
