@@ -1,12 +1,14 @@
-﻿#######################################################
-# Author: Michael Wharton
-# Date: 12/07/2018
-# Description: Configure Project Server 2019 configuration
-#######################################################
+﻿<#
+  Author: Michael Wharton
+  Date: 12/07/2018
+  Description: Configure Project Server 2019 configuration
+  FileName: 4.3.ProjectServer2019.ps1
+#>
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Confirm:$false -Verbose
 Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue  -Verbose
+
 # Disable Loopback
-# New-ItemProperty HKLM:\System\CurrentControlSet\Control\Lsa -Name "DisableLoopbackCheck" -Value 1 -PropertyType DWord
+New-ItemProperty HKLM:\System\CurrentControlSet\Control\Lsa -Name "DisableLoopbackCheck" -Value 1 -PropertyType DWord
 
 Measure-command {
 Write-Host -ForegroundColor Yellow "Project Server Service Configuration Started"
@@ -36,7 +38,7 @@ $templatePWA          = Get-SPWebTemplate "PWA#0" -CompatibilityLevel 14
 # Create credentials
 $ServiceSP            = "XXX2dev\ServiceSP"   
 $credServiceSP        = Import-CliXml -Path 'C:\safe\XXX2dev-ServiceSP.txt’ 
-################################################################
+
 # create Managed Account
 $ManagedAcct = Get-SPManagedAccount -Identity $ServiceSP -ErrorAction SilentlyContinue
 If ($ManagedAcct -eq $null)
@@ -46,7 +48,7 @@ If ($ManagedAcct -eq $null)
     }
 else
     {Write-Host -ForegroundColor Green "Managed Account $ServiceSP Already Created"}
-################################################################
+
 # Create Project Service Pool
 $ServicePool = Get-SPServiceApplicationPool | Where-Object {$_.Name -eq $ProjectServicePool } -ErrorAction SilentlyContinue
 If ($ServicePool -eq $null)
@@ -56,7 +58,7 @@ If ($ServicePool -eq $null)
     }
 Else
     {Write-Host -ForegroundColor Green "Project Service Pool: $ProjectServicePool Already Created"}
-################################################################
+
 #  Create Project Server Service and Enable Project Key
 $ProjectServiceID = Get-SPServiceApplication |  Where-Object {$_.DisplayName -eq $ProjectServiceApp } -ErrorAction SilentlyContinue
 If ($ProjectServiceID -eq $null)
@@ -67,7 +69,7 @@ If ($ProjectServiceID -eq $null)
 Else
     {Write-Host -ForegroundColor Green "Project Service Application: $ProjectServiceApp  Already Created"}
 
-#################################################################
+#  Enabled Project Server Services with license key
 $ProjectEnabled = Get-ProjectServerLicense -Verbose
 If (($ProjectEnabled).Contains("Disabled"))
     {
@@ -80,9 +82,7 @@ If (($ProjectEnabled).Contains("Disabled"))
     Write-Host -ForegroundColor Green "Project Server 2019 Preview: Already Enabled"
 }
 
-#################################################################
 # Create Web Application on root that contains project server collection
-#################################################################
 $WA = Get-SPWebApplication | Where-Object {$_.DisplayName -eq $WebAppName } 
 if ($WA -eq $null)
     {
@@ -96,7 +96,7 @@ if ($WA -eq $null)
     }
 Else
     {Write-Host -ForegroundColor Green "Project Web Application: $WebAppName  Already Created"}
-#########################################################################
+
 # Create Root Site when PWA is defined on root
 $Root = Get-SPSite -WebApplication $WebAppName  | Where-Object {$_.URL -eq $SiteRootURL } 
 if ($Root -eq $null)
@@ -113,7 +113,6 @@ else
     Write-Host -ForegroundColor Green "Root Site: $SiteRootURL already Created"
     }
 
-#########################################################################
 # Provision PWA 
 $PWA = Get-SPSite | Where-Object {$_.URL -eq $SitePwaURL } 
 if ($PWA -eq $null)
@@ -131,7 +130,5 @@ else
     Write-Host -ForegroundColor Green "Project Site: $SitePwaURL Already Created"
     }
 Write-Host -ForegroundColor Yellow "Project Server Service Configuration Finished"
-
 }
-
 
