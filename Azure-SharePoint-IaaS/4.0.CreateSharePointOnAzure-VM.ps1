@@ -2,15 +2,11 @@
     .SYNOPSIS
         Walk thru creating IaaS SharePoint Server 2019
     .DESCRIPTION
-        Create IaaS SharePoint Server VM
+        Create IaaS SharePoint Server VM using azure Trial Versions of SharePoint
     .AUTHOR
         Michael Wharton
     .DATE
         01/04/2019
-    .PARAMETER
-        none - however update the constants below
-    .EXAMPLE
-        live demo
     .NOTES
         Make sure that AD VM is running
 #>
@@ -90,6 +86,7 @@ $container = New-azurestoragecontainer -name $containerName -Permission Containe
 $StorageAccount   =  Get-AzureRmStorageAccount -ResourceGroupName $GroupName -Name $storageName -Verbose
 $OSDiskUri        = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd" 
 $DataDiskUri      = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $DataDiskName  + ".vhd"
+
 ############# Create PIP Address or Public IP address for SharePoint Server VM #######################################
 # Note: Get-module -ListAvailable  --- If prompt for Login-AzureRmAccount, it may be because multiple version of azure
 $publicIP = New-AzureRmPublicIpAddress `
@@ -105,7 +102,6 @@ $IPConfig = New-AzureRmNetworkInterfaceIpConfig -Name $NICname `
 $NSG = Get-AzureRmNetworkSecurityGroup -Name $SecurityGrp -ResourceGroupName $vnetGroupName -Verbose
 $nic = New-AzureRmNetworkInterface -Name $NICname -ResourceGroupName $groupname `
      -Location $location -IpConfiguration $ipconfig -NetworkSecurityGroupId $nsg.Id -Verbose
-
 ########### Create SharePoint 2019 Server virtual machine  ###########################################################
 $vm = New-AzureRmVMConfig -VMName $vmName -VMSize $instanceSize |
     Set-AzureRmVMOperatingSystem -Windows -ComputerName $vmName -Credential $cred -ProvisionVMAgent -EnableAutoUpdate  |
