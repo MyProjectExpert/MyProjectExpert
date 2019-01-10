@@ -16,5 +16,7 @@ Post Activities
    remove VP6
    Join Domain
 2) Reboot
-
+3) Run SharePoint Configuration Wizard to 
+4) update windows server with most recent patches
+5) Run SharePoint Configuration Wizard 
 #>
