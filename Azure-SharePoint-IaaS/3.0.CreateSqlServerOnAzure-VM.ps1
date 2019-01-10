@@ -37,11 +37,11 @@ $skuName          = "Standard_LRS"
 $instanceSize     = "Standard_D2"
 # Get-AzureRoleSize | where {$_.Cores -eq 2 -and $_.MemoryInMB -gt 4000 -and $_.MemoryInMB -lt 9000 } | select instance_size, rolesizelabel
 $localIP          = "192.168.0.11"
-$publisherName   = "MicrosoftSQLServer"
-# $offer          = "SQL2016-WS2016"   # SQL 2016
-# $offer          = "SQL2017-WS2016"   # SQL 2017
-$offer          = "SQL2019-WS2016"
-$sku            = "SQLDEV"
+$publisherName    = "MicrosoftSQLServer"
+# $offer          = "SQL2016-WS2016"   # SQL 2016 (other versions of SQL)
+# $offer          = "SQL2017-WS2016"   # SQL 2017 
+$offer            = "SQL2019-WS2016"
+$sku              = "SQLDEV"
 #Select-AzureSubscription -SubscriptionName $RmAccount.Context.Subscription.Name | Get-AzureNetworkSecurityGroup -Name $SecurityGrp
 #Get-AzureNetworkSecurityGroup -Name $SecurityGrp -Profile
 #
@@ -81,7 +81,6 @@ $storeContext = New-AzureStorageContext -StorageAccountName $storageName -Storag
 
 # Create a storage container 
 $container = New-azurestoragecontainer -name $containerName -Permission Container -Context $storeContext -Verbose
-# Look at what was created
 # Get-AzureStorageContainer -Context $storecontext
 $StorageAccount   =  Get-AzureRmStorageAccount -ResourceGroupName $GroupName -Name $storageName
 $OSDiskUri        = $StorageAccount.PrimaryEndpoints.Blob.ToString() + "vhds/" + $OSDiskName + ".vhd"
