@@ -29,7 +29,7 @@ $WindowAuthProvider       = "NTLM"
 $PassPhrase               = "Demo9999"
 $CentralAdminSite         = "http://demosp:8080"
 $AcctFarmAdmin            = "XXX2dev\FarmAdmin"
-$credFarmAdmin            = Import-CliXml -Path 'C:\safe\XXX2dev-farmadmin.txt’ 
+$credFarmAdmin            = Import-CliXml -Path 'C:\safe\XXX2dev-farmadmin.txt' 
 #
 ##########################################################
 #  1. configdb

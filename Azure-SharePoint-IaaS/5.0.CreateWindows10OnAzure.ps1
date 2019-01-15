@@ -18,7 +18,7 @@ $LoginRmAccount   = Login-AzureRmAccount   #  must log into Azure
 # $secpass  = $adminPass |ConvertTo-SecureString -AsPlainText -Force
 # $cred  = New-Object System.Management.Automation.PSCredential -ArgumentList $adminUser, $secPass
 #
-$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt’ 
+$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt'
 #
 $groupName        = "demowin10"
 $vmName           = "demowin10"          

@@ -37,7 +37,7 @@ $templateSTS          = Get-SPWebTemplate "STS#0" -CompatibilityLevel 14
 $templatePWA          = Get-SPWebTemplate "PWA#0" -CompatibilityLevel 14
 # Create credentials
 $ServiceSP            = "XXX2dev\ServiceSP"   
-$credServiceSP        = Import-CliXml -Path 'C:\safe\XXX2dev-ServiceSP.txt’ 
+$credServiceSP        = Import-CliXml -Path 'C:\safe\XXX2dev-ServiceSP.txt'
 
 # create Managed Account
 $ManagedAcct = Get-SPManagedAccount -Identity $ServiceSP -ErrorAction SilentlyContinue

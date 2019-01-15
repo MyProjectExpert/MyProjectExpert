@@ -13,8 +13,7 @@ $LoginRmAccount   = Login-AzureRmAccount
 # $adminPass        = "password"
 # $secpass  = $adminPass |ConvertTo-SecureString -AsPlainText -Force
 # $cred  = New-Object System.Management.Automation.PSCredential -ArgumentList $adminUser, $secPass
-#
-$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt’ 
+$cred = Import-CliXml -Path 'C:\safe\local-mawharton.txt'
 #
 $GroupName        = "demoad"
 $DomainName       = "demodev.local"
