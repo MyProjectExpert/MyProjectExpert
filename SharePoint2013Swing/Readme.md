@@ -1,6 +1,6 @@
-#### SharePoint Swing method is a method to move SharePoint front-end or app tier over to a new version of windows server.
+## SharePoint Swing method is used to move SharePoint front-end or app tier server to a newer version of windows server.
 
-## General Steps to swing:
+#### General Steps for SharePoint Swing:
 * Install two Windows Server 2012 R2 servers and install SharePoint 2013 on each node
 * Join the new SharePoint servers to the SharePoint 2013 Farm. One as front-end tier and the other as app tier
 * Using Central Admin add services to the new app and front-end SharePoint Servers
