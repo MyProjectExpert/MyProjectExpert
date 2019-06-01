@@ -17,7 +17,7 @@ $ProjectOwner         = $domainName + "\mawharton"   # primary username
 $SecondOwner          = $domainName + "\mwharton"    # secondary username
 $ServiceSP            = $domainName + "\ServiceSP"   # Service Account
 $ServicePass          = "password"
-$ProjectKey           = "R9946-QXNHR-62JPQ-3H3QC-TMWJT"
+$ProjectKey           = "enter key"
 #######################################################
 $WebAppURL            = "http://" + $hostName
 $SiteRootURL          = "http://" + $hostName
