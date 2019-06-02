@@ -2,6 +2,7 @@
 Test 1
 Test 3
 test 4
+test 5
 #>
 
 Get-NetFirewallProfile -Name Domain
