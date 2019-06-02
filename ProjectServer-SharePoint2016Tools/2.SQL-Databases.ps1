@@ -1,6 +1,6 @@
 ﻿<#
 Test 1
-Test 2
+Test 3
 #>
 
 Get-NetFirewallProfile -Name Domain
