@@ -1,6 +1,6 @@
 ﻿#
-#  Minor changes to code
-#    Editing line from GitHub web site
+#  Author: Michael Wharton
+#  Create date:  10/31/2019 Halloween
 #
 
 Set-ExecutionPolicy -ExecutionPolicy Unrestricted
