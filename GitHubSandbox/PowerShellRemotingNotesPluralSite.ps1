@@ -1,4 +1,8 @@
-﻿Set-ExecutionPolicy -ExecutionPolicy Unrestricted
+﻿#
+#  Minor changes to code
+#
+
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted
 cd \ps1
 
 # Lesson 3 - Remoting Concepts and Terminology
